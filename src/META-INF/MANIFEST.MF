@@ -1,18 +1,17 @@
-Name: STATS_PACKAGE_INSTALL
-Display-Name: Install Python and R Packages
-Dialog-Specs: STATS_PACKAGE_INSTALL.cfe
-Command-Specs: STATS_PACKAGE_INSTALL.xml
-Code-Files: STATS_PACKAGE_INSTALL.py
-Misc-Files: extsyntax.css,LICENSE,markdown.html
-Summary: Installs packages needed by extensions or programs but that a
- re not installed with them
-Description: This package installs or upgrades Python or R packages.
- On some systems, running it may require starting Statistics in Admins
- trator mode.
-Author: Jon K. Peck
-Version: 1.0.3
+Name: STATS CONVERT PYTHON
+Display-Name: Python Conversion from 2.x
+Dialog-Specs: STATS_CONVERT_PYTHON.spd
+Command-Specs: STATS_CONVERT_PYTHON.xml
+Code-Files: STATS_CONVERT_PYTHON.py
+Misc-Files: extsyntax.css,defaultdialogicon.png,LICENSE,markdown.html
+Summary: Convert syntax files containing blocks of Python code or Pyth
+ on files
+Description: This extension converts Python 2 code to Python 3.  It pr
+ ocesses Python code in .py files and .sps files
+Author: Jon K Peck
+Version: 1.0.2
 Product-Version: 27
-Date: 8/20/2021
-Categories: Python, R, installation
+Date: 3/1/2021
+Categories: utility, Python2, conversion
 Plugins: Python
 Python-Version: 3
