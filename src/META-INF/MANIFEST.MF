@@ -1,18 +1,18 @@
-Name: STATS MAKE CASES
-Dialog-Specs: makedata.cfe
-Command-Specs: STATS_MAKE_CASES.xml
-Code-Files: STATS_MAKE_CASES.py
+Name: STATS_POP_DESCRIPTIVES
+Dialog-Specs: PopulationDes.cfe
+Command-Specs: STATS_POP_DESCRIPTIVES.xml
+Code-Files: STATS_POP_DESCRIPTIVES.py
 Misc-Files: extsyntax.css,defaultdialogicon.png,LICENSE,markdown.html
-Summary: Create a dataset of random numbers
-Description: This procedure creates a new dataset of random variables 
- from any of the distributions supported in the RV.* random number gen
- erators plus the triangular distribution.  It replaces the older cust
- om dialog box of the same name.
-Author: Jon K Peck
-Version: 1.0.0
+Summary: Calculate Descriptive Statistics for Populations
+Description: This procedure calculates descriptive stats assuming a po
+ pulation, so the denominator for the standard deviation and variance 
+ is N, not N-1.  It is a rewrite of the older Population Descriptive S
+ tatistics custom dialog box.
+Author: Jon K P:eck
+Version: 2.0.3
 Product-Version: 24
 Date: 6/26/2023
-Categories: distribution random
+Categories: population descriptives
 Plugins: Python
 Python-Version: 3
 Translation-Catalogues: 
