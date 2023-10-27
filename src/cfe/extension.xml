@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--***********************************************************************--><!----><!--Licensed Materials - Property of IBM--><!----><!--IBM SPSS Products: Modeler Common--><!----><!--(C) Copyright IBM Corp. 1989, 2021--><!----><!--US Government Users Restricted Rights - Use, duplication or disclosure--><!--restricted by GSA ADP Schedule Contract with IBM Corp.--><!----><!--***********************************************************************--><Extension xmlns="http://xml.spss.com/pasw/extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" version="8.0" xsi:schemaLocation="http://xml.spss.com/pasw/extension http://xml.spss.com/pasw/extension/ExtensionSpecification.xsd">
+  <ExtensionDetails description="Created by CDB" id="installs" label="Install Modules" provider="IBM SPSS, Inc." providerTag="spss" version="8.0"/>
+  <Resources>
+    <Bundle id="bundle73" path="installs" type="properties"/>
+    <JarFile id="jar" path="cdb_peer.jar"/>
+    <HelpInfo id="HTMLHelp" type="HTMLHelp"/>
+  </Resources>
+  <CommonObjects>
+    <PropertyTypes>
+      <Structure id="structure_pythonpk_1">
+        <Attribute colWidth="20" delimiter=" " name="item_5_0" resourceKey="structure_pythonpk_1.item_5_0" syntax="%%ThisValue%%" valueType="string"/>
+      </Structure>
+      <Structure id="structure_Rpk_1">
+        <Attribute colWidth="20" delimiter=" " name="item_6_0" resourceKey="structure_Rpk_1.item_6_0" syntax="%%ThisValue%%" valueType="string"/>
+      </Structure>
+    </PropertyTypes>
+    <PropertySets/>
+    <Actions/>
+  </CommonObjects>
+  <Feature canGenerateASL="false" id="installs" includesAnnotation="false" peerClass="com.spss.shared.custom_gui.ui_builder.peers.RStatsBuilderPeer" resourceKey="installs">
+    <DisplayLabels>
+      <DisplayLabel>
+        <PropertyCondition op="isNotEmpty" property="rbuilder.build_syntax"/>
+        <Format textKey="id.LABEL"/>
+      </DisplayLabel>
+    </DisplayLabels>
+    <ModuleImports>
+      <ModuleImport moduleId="pasw.rstats">
+        <ComponentImport componentId="rbuilder"/>
+      </ModuleImport>
+    </ModuleImports>
+    <Containers>
+      <Container name="ConsoleOutput"/>
+      <Container name="RModel"/>
+      <Container name="HTMLOutput"/>
+      <Container name="TextOutput"/>
+      <Container name="PMML"/>
+      <Container name="StatXML"/>
+    </Containers>
+    <Properties>
+      <ImportProperties context="rbuilder"/>
+      <Property defaultValue="" name="modelName" valueType="string"/>
+      <Property defaultValue="false" name="modelRename" valueType="boolean"/>
+      <Property defaultValue="STATS PACKAGE INSTALL\n    %%pythonpk%% %%Rpk%%" name="script" valueType="string"/>
+      <Property defaultValue="false" name="canScore" valueType="boolean"/>
+      <Property defaultValue="" name="scoringScript" valueType="string"/>
+      <Property name="addOns" valueType="string"/>
+      <Property defaultValue="false" name="isModal" valueType="boolean"/>
+      <Property defaultValue="SYNTAX" name="scriptType" valueType="string"/>
+      <Property defaultValue="MODEL" name="nodeType" valueType="string"/>
+      <Property defaultValue="MODELING" name="paletteType" valueType="string"/>
+      <Property defaultValue="%%ThisValue%%" name="item_17_syntax" valueType="string"/>
+      <Property defaultValue="PYTHON=%%ThisValue%%" name="pythonpk_syntax" valueType="string"/>
+      <Property isKeyed="false" isList="true" name="pythonpk" type="structure_pythonpk_1" valueType="structure"/>
+      <Property defaultValue="R=%%ThisValue%%" name="Rpk_syntax" valueType="string"/>
+      <Property isKeyed="false" isList="true" name="Rpk" type="structure_Rpk_1" valueType="structure"/>
+    </Properties>
+    <UserInterface swingPeerClass="com.spss.shared.custom_gui.ui_builder.peers.RStatsUIPeer">
+      <PropertiesPanel>
+        <PropertiesPanel>
+          <Layout anchor="northwest" columnWeight="1.0" fill="both" gridColumn="0" gridHeight="1" gridRow="0" gridWidth="1" rowWeight="1.0"/>
+          <PropertiesPanel id="leftPanel">
+            <Layout anchor="firstLineStart" columnWeight="1.0" fill="horizontal" gridColumn="0" gridHeight="1" gridRow="0" gridWidth="1" rowWeight="1.0"/>
+            <StaticText textKey="item_4.LABEL">
+              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="0" gridRow="2" gridWidth="1" rowWeight="0.0"/>
+            </StaticText>
+            <TableControl allowRowReorder="true" columnWidths="[20 ]" labelAbove="true" property="pythonpk" resourceKey="pythonpk" showDeleteButton="true" showLabel="true" showNewButton="true" showTopBottomButton="false">
+              <Layout anchor="northwest" columnWeight="1.0" fill="both" gridColumn="0" gridRow="0" gridWidth="1" rowWeight="0.0"/>
+            </TableControl>
+            <StaticText textKey="item_11.LABEL">
+              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="0" gridRow="3" gridWidth="1" rowWeight="1.0"/>
+            </StaticText>
+          </PropertiesPanel>
+          <PropertiesPanel id="middlePanel">
+            <Layout anchor="firstLineStart" columnWeight="1.0" fill="horizontal" gridColumn="1" gridHeight="1" gridRow="0" gridWidth="1" rowWeight="1.0"/>
+            <TableControl allowRowReorder="true" columnWidths="[20 ]" labelAbove="true" property="Rpk" resourceKey="Rpk" showDeleteButton="true" showLabel="true" showNewButton="true" showTopBottomButton="false">
+              <Layout anchor="northwest" columnWeight="1.0" fill="both" gridColumn="1" gridRow="0" gridWidth="1" rowWeight="0.0"/>
+            </TableControl>
+            <StaticText textKey="item_7.LABEL">
+              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="1" gridRow="2" gridWidth="1" rowWeight="1.0"/>
+            </StaticText>
+          </PropertiesPanel>
+        </PropertiesPanel>
+      </PropertiesPanel>
+    </UserInterface>
+    <OutputDataModel mode="replace"/>
+    <Execution>
+      <Outputs>
+        <OutputContainer id="C1" outputId="C1" targetContainer="ConsoleOutput"/>
+        <OutputContainer id="C2" outputId="C2" targetContainer="RModel"/>
+        <OutputContainer id="C3" outputId="C3" targetContainer="HTMLOutput"/>
+        <OutputContainer id="C4" outputId="C4" targetContainer="TextOutput"/>
+        <OutputContainer id="C5" outputId="C5" targetContainer="PMML"/>
+        <OutputContainer id="C6" outputId="C6" targetContainer="StatXML"/>
+      </Outputs>
+      <RunComponent context="rbuilder" id="1">
+        <OutputContainer containerName="ConsoleOutput" id="C1" targetContainer="ConsoleOutput"/>
+        <OutputContainer containerName="RModel" id="C2" targetContainer="RModel"/>
+        <OutputContainer containerName="HTMLOutput" id="C3" targetContainer="HTMLOutput"/>
+        <OutputContainer containerName="TextOutput" id="C4" targetContainer="TextOutput"/>
+        <OutputContainer containerName="PMML" id="C5" targetContainer="PMML"/>
+        <OutputContainer containerName="StatXML" id="C6" targetContainer="StatXML"/>
+      </RunComponent>
+    </Execution>
+    <Validations/>
+  </Feature>
+</Extension>

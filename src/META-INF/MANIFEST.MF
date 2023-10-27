@@ -1,18 +1,18 @@
-Name: STATS MAKE CASES
-Dialog-Specs: makedata.cfe
-Command-Specs: STATS_MAKE_CASES.xml
-Code-Files: STATS_MAKE_CASES.py
-Misc-Files: extsyntax.css,defaultdialogicon.png,LICENSE,markdown.html
-Summary: Create a dataset of random numbers
-Description: This procedure creates a new dataset of random variables 
- from any of the distributions supported in the RV.* random number gen
- erators plus the triangular distribution.  It replaces the older cust
- om dialog box of the same name.
-Author: Jon K Peck
-Version: 1.0.0
-Product-Version: 24
-Date: 6/26/2023
-Categories: distribution random
+Name: STATS_PACKAGE_INSTALL
+Dialog-Specs: STATS_PACKAGE_INSTALL.cfe
+Command-Specs: STATS_PACKAGE_INSTALL.xml
+Code-Files: STATS_PACKAGE_INSTALL.py
+Misc-Files: extsyntax.css,LICENSE,markdown.html
+Summary: Installs packages needed by extensions or programs but that a
+ re not installed with them
+Description: This package installs or upgrades Python or R packages.  
+ On some systems, running it may require starting Statistics in Admins
+ trator mode.
+Author: Jon K. Peck
+Version: 1.0.3
+Product-Version: 27
+Date: 8/20/2021
+Categories: Python, R, installation
 Plugins: Python
 Python-Version: 3
 Translation-Catalogues: 
