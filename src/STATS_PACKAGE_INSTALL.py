@@ -5,52 +5,111 @@ version = __version__
 # history
 # 07-31-2021 initial version
 # 09-27-2022 protect against unset repos option
+# 03-jul-2024 add version specification and uninstall capability
 
 # The STATS PACKAGE INSTALL extension command
+# R version numbers are not implemented
 
-import spss, spssaux, os, random, platform
+import spss, spssaux, os, random, platform, re
 from extension import Template, Syntax, processcmd
 
 
 # debugging
         # makes debug apply only to the current thread
-#try:
-    #import wingdbstub
-    #import threading
-    #wingdbstub.Ensure()
-    #wingdbstub.debugger.SetDebugThreads({threading.get_ident(): 1})
-#except:
-    #pass
+try:
+    import wingdbstub
+    import threading
+    wingdbstub.Ensure()
+    wingdbstub.debugger.SetDebugThreads({threading.get_ident(): 1})
+except:
+    pass
 
 # main routine
-def doinstalls(python=None, R=None):
-    """Install list of packages from PyPI or CRAN"""
+def doinstalls(python=None, R=None, pyuninstalls=None):
+    """Install list of packages from PyPI or CRAN with optional package version numbers ( v numbers for Python only)"""
     
-    if not (python or R):
+    pyuninstall(pyuninstalls)
+    if not (python or R) and pyuninstall is None:
         raise ValueError(_("No packages to install were specified."))
     if python and not python[:] == ['[',']']:
-        pyinstall(python)
+        python, pypackagever = validatever(python)
+        pyinstall(python, pypackagever)
     if R and not R[:] == ['[',']']:
+        R, rpackagever = validatever(R)
+        if not all(item in ["*", None] for item in rpackagever):
+            raise ValueError(_("Version specifications for R packages are not currently supported"))        
         rinstall(R)
     
-def pyinstall(packages):
+def validatever(pspec):
+    """construct package and version lists and return with unspecified version numbers set to *
+    
+    pspec is a list of packages and optional version numbers with "*" meaning latest
+    Since versioning is not supported for R packages, all entries in pspec are
+    de facto package names."""
+
+    regex = "[\d.*<>]+"  # sequence of digits and dots or stars and <>(allows some irregular sequences+)
+ 
+    if pspec is None:   
+        return (None, None)
+    plist = []
+    vlist = []
+
+    # the SPSS parser splits a tokenlist item at a second decimal into two items  (grr!)
+    # so quotes are required around version numbers
+
+    for item in pspec:
+        match = re.match(regex, item)
+        if match is None:
+            plist.append(item)   # package name
+        else:
+            vlist.append(match.group())  # looks like a version spec
+    lvlen = len(vlist)
+    lplen = len(plist)
+    if lvlen > lplen:
+        raise ValueError(_("""Too many version numbers specified"""))
+    vlist.extend((lplen - lvlen) * ['*'])  # pad with "*" as needed
+    return (plist, vlist)
+
+
+def pyinstall(packages, versions):
     "Install list of Python packages"
     
+    if packages is None or packages== [""]:
+        return  
     loc, part2 = getSpssLocation() # part2 holds extra stuff for Mac
     tloc = getTargetLocation()
     
     # Install or upgrade packages using the first location specified by SHOW EXTPATH
-    for p in packages:
+    for pnumber, p in enumerate(packages):
         print(_(f"*** Installing Python package {p} into {tloc[0]} for {spss.GetDefaultPlugInVersion()} ***"))
         cmd = ["HOST COMMAND=["]
+        if versions[pnumber] == "*":
+            vspec = ""
+        else:
+            vspec = f"=={versions[pnumber]}"
+        cmd.append(spssaux._smartquote(fr"""{loc}statisticspython3 -m pip --disable-pip-version-check install -U -t "{tloc[0]}" {p}{vspec} """) +"]")
         if part2 is not None:
             cmd.append(part2)
-        cmd.append(spssaux._smartquote(fr"""{loc}statisticspython3 -m pip --disable-pip-version-check install -U -t "{tloc[0]}" {p} """) +"]")
         try:
             spss.Submit(cmd)
         except:
             pass    # keep going.  errors are reported in the Submit output.
     return
+
+def pyuninstall(packages):
+    """Uninstall any listed packages ignoring errors
+    
+    packages is a list of packages to uninstall"""
+    
+    if packages is None:
+        return
+    loc, part2 = getSpssLocation()
+    for p in packages:
+        cmd = ["HOST COMMAND=["]
+        cmd.append(spssaux._smartquote(fr"""{loc}statisticspython3 -m pip --disable-pip-version-check uninstall -y {p}""") +"]")
+        if part2 is not None:
+            cmd.append(part2)
+        spss.Submit(cmd)
 
 def getSpssLocation():
     """Return a duple of where Statistics is installed and, on Mac, an export command, or None
@@ -131,7 +190,8 @@ def  Run(args):
 
     oobj = Syntax([
         Template("PYTHON", subc="",  ktype="literal", var="python", islist=True),
-        Template("R", subc="",  ktype="literal", var="R", islist=True)
+        Template("R", subc="",  ktype="literal", var="R", islist=True),
+        Template("PYTHON", subc="UNINSTALL", ktype="literal", var="pyuninstalls", islist=True)
     ])
         
     #debugging
