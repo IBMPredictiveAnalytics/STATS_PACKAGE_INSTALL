@@ -20,10 +20,7 @@
 
 <p>STATS PACKAGE INSTALL<br/>
 PYTHON = list of Python packages to install from PyPI<br/>
-R = list of R packages to install from CRAN</P>
-package versions
-<p>/UNINSTALL</br>
-PYTHON = list of Python packages to remove
+R = list of R packages to install from CRAN<br/>
 </p>
 
 <p>/HELP</p>
@@ -37,10 +34,6 @@ PYTHON = list of Python packages to remove
 STATS PACKAGE INSTALL PYTHON=nltk R=class AER.
 </code></pre>
 
-<pre class="example"><code>
-STATS PACKAGE INSTALL PYTHON=nltk abc xyz "*" "1,2,3" "<=3.3".
-</code></pre>
-
 <p>R CRAN packages needed by an R extension command are normally installed automatically when an extension
 is installed if an Internet connection is available, but sometimes a package dependency is not specified by the
 package author or a newer version may be needed.  For Python, packages needed from PyPI are currently not
@@ -51,27 +44,16 @@ installed automatically with the extension command.</p>
 <p><strong>PYTHON</strong> specifies one or more Python packages to install from PyPI.
 The letter case of the names does not matter.  If the current version of a package is already installed,
 it will be skipped.</p>
-<strong>package versions</strong> By default, the latest version of a package is installed.  To install
-a specific version, list the version number in quotes.  If any version specifications are used, versions
-must be listed for all in the order in which the package names are listed.  Use * to indicate the latest version.</p>
-<p>Version numbers can also be specified with an inequality indicated by &lt;, &lt;=, >, or >= e.g. "<2.0.0"
-<p>There is currently no way to specify specific versions for R packages with this command.<p>
-
 
 <p><strong>R</strong> specifies one or more R packages to install from CRAN.
 The letter case must match the case of the name.  The install will overwrite
 an existing package with the same name.
 </p>
-<strong>/UNINSTALL PYTHON</strong> List the packages to be removed.  Removals take place before
-any installs are done.  If a package has been used in the current session, it may be necessary to
-restart SPSS Statistics before the package can be removed.  Python itself is not removed.</p>
 
-<p>Python packages are installed and removed by the Python PIP utility via the SPSS Statistics HOST command.  R packages
+<p>Python packages are installed by the Python PIP utility via the SPSS Statistics HOST command.  R packages
 are installed by the R install.packages function using a BEGIN PROGRAM R block.</p>
 
-
-
-<p>&copy; Copyright Jon K Peck, 2021, 2024</p>
+<p>&copy; Copyright Jon K Peck, 2021</p>
 
 </body>
 
