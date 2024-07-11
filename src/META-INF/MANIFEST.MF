@@ -9,9 +9,10 @@ Description: This package installs, updates, or removes Python or R pa
  ckages.  On some systems, running it may require starting Statistics 
  in Adminstrator mode.
 Author: Jon K. Peck
-Version: 1.1.0
+Version: 1.1.3
 Product-Version: 27
 Date: 8/20/2021
 Categories: Python, R, installation
 Plugins: Python,R
 Python-Version: 3
+Translation-Catalogues: 
