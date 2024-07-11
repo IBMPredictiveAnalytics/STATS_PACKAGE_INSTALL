@@ -1,97 +1,167 @@
 __author__  =  'Jon K Peck'
-__version__ =  '1.0.1'
+__version__ =  '1.1.0'
 version = __version__
 
 # history
 # 07-31-2021 initial version
 # 09-27-2022 protect against unset repos option
+# 03-jul-2024 add version specification and uninstall capability
+# 04-jul-2024
 
 # The STATS PACKAGE INSTALL extension command
+# R version numbers are not implemented
 
-import spss, spssaux, os, random, platform
+import spss, spssaux, os, random, platform, re, subprocess
 from extension import Template, Syntax, processcmd
 
+# debugging (optional)
+try:
+    import wingdbstub
+    import threading
+    wingdbstub.Ensure()
+    wingdbstub.debugger.SetDebugThreads({threading.get_ident(): 1})
+except:
+    pass
 
-# debugging
-        # makes debug apply only to the current thread
-#try:
-    #import wingdbstub
-    #import threading
-    #wingdbstub.Ensure()
-    #wingdbstub.debugger.SetDebugThreads({threading.get_ident(): 1})
-#except:
-    #pass
+def doinstalls(python=None, R=None, pyuninstalls=None):
+    """Install or uninstall Python and R packages"""
 
-# main routine
-def doinstalls(python=None, R=None):
-    """Install list of packages from PyPI or CRAN"""
+    # Uninstall Python packages first if specified
+    if pyuninstalls and pyuninstalls != ['[', ']']:
+        pyuninstall(pyuninstalls)
+
+    # Validate and install Python packages if specified
+    if python and python != ['[', ']']:
+        python, pypackagever = validatever(python)
+        if python:  # Ensure there are valid packages to install
+            pyinstall(python, pypackagever)
+
+    # Validate and install R packages if specified
+    if R and R != ['[', ']']:
+        R, rpackagever = validatever(R)
+        if not all(item in ["*", None] for item in rpackagever):
+            raise ValueError("Version specifications for R packages are not currently supported")
+        if R:  # Ensure there are valid packages to install
+            rinstall(R)
+
+
+def validatever(pspec):
+    """Validate package names and versions for Python and R"""
+
+    regex = "[\d.*<>]+"  # Regular expression to match version specifications
+
+    if pspec is None:
+        return None, None
     
-    if not (python or R):
-        raise ValueError(_("No packages to install were specified."))
-    if python and not python[:] == ['[',']']:
-        pyinstall(python)
-    if R and not R[:] == ['[',']']:
-        rinstall(R)
+    plist = []
+    vlist = []
+
+    for item in pspec:
+        match = re.match(regex, item)
+        if match is None:
+            plist.append(item)   # Package name
+        else:
+            vlist.append(match.group())  # Version specification
     
-def pyinstall(packages):
-    "Install list of Python packages"
+    lplen = len(plist)
+    lvlen = len(vlist)
+
+    if lvlen > lplen:
+        raise ValueError("Too many version numbers specified")
+
+    vlist.extend((lplen - lvlen) * ['*'])  # Pad with "*" as needed
+
+    return plist, vlist
+
+
+def pyinstall(packages, versions):
+    """Install Python packages"""
+
+    if not packages:
+        return
     
-    loc, part2 = getSpssLocation() # part2 holds extra stuff for Mac
+    loc, part2 = getSpssLocation()
     tloc = getTargetLocation()
     
-    # Install or upgrade packages using the first location specified by SHOW EXTPATH
-    for p in packages:
-        print(_(f"*** Installing Python package {p} into {tloc[0]} for {spss.GetDefaultPlugInVersion()} ***"))
-        cmd = ["HOST COMMAND=["]
-        if part2 is not None:
-            cmd.append(part2)
-        cmd.append(spssaux._smartquote(fr"""{loc}statisticspython3 -m pip --disable-pip-version-check install -U -t "{tloc[0]}" {p} """) +"]")
+    for pnumber, p in enumerate(packages):
+        if not p:
+            continue
+
+        print(f"*** Installing Python package {p} into {tloc[0]} for {spss.GetDefaultPlugInVersion()} ***")
+
+        # Determine the version specification
+        if versions[pnumber] == "*":
+            vspec = ""
+        else:
+            vspec = f"=={versions[pnumber]}"
+
+        # Build the pip command
+        command = f'"{loc}statisticspython3" -m pip --disable-pip-version-check install -U -t "{tloc[0]}" {p}{vspec} --no-cache-dir'
+
         try:
-            spss.Submit(cmd)
-        except:
-            pass    # keep going.  errors are reported in the Submit output.
-    return
+            # Run the pip command
+            result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(result.stdout.decode())
+        except subprocess.CalledProcessError as e:
+            print(f"Error installing {p}: {e.stderr.decode()}")
+
+
+def pyuninstall(packages):
+    """Uninstall Python packages"""
+
+    if not packages:
+        return
+
+    loc, part2 = getSpssLocation()
+    for p in packages:
+        print(f"*** Uninstalling Python package {p} ***")
+        command = f'"{loc}statisticspython3" -m pip uninstall -y {p}'
+        
+        try:
+            result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(result.stdout.decode())
+        except subprocess.CalledProcessError as e:
+            print(f"Error uninstalling {p}: {e.stderr.decode()}")
+
 
 def getSpssLocation():
-    """Return a duple of where Statistics is installed and, on Mac, an export command, or None
+    """Return SPSS installation location"""
 
-    The Statistics location does not have to be on the system path"""
-    
     plat = platform.system().lower()
 
     if plat.startswith("win"):
         try:
             spsshome = os.environ["SPSS_HOME"]
-        except:
-            raise ValueError(_("Could not find SPSS_HOME environment variable"))        
-        return ('"' + spsshome + os.path.sep + '"', None)
+            #print(f"SPSS_HOME is set to: {spsshome}")
+        except KeyError:
+            raise ValueError("Could not find SPSS_HOME environment variable")        
+        if not os.path.isdir(spsshome):
+            raise ValueError(f"SPSS_HOME does not point to a valid directory: {spsshome}")
+        return os.path.join(spsshome, ""), None
     
-    elif plat.startswith("darw"):
-        try:
-            # SPSSHOME is not currently set on the Mac, so make  code to set it if that is still true
-            # Without this set, the statisticspython3 script file will fail
-            part2 = os.environ["SPSSHOME"]
-            part2 = None
-        except:
-            exportcode = f"/Applications/IBM SPSS Statistics/SPSS Statistics.app/Contents"
-            part2 = spssaux._smartquote(fr"""export SPSSHOME="{exportcode}" """)
-        return ('"' + "/Applications/IBM SPSS Statistics/SPSS Statistics.app/Contents/bin/" + '"',
-            part2)
+    elif plat.startswith("darwin"):
+        # macOS specific
+        spsshome = "/Applications/IBM SPSS Statistics/SPSS Statistics.app/Contents/bin/"
+        #print(f"SPSS_HOME is set to: {spsshome}")
+        return spsshome, None
     
-    elif plat.startswith("lin"):
+    elif plat.startswith("linux"):
         try:
             spsshome = os.environ["SPSS_SERVER_HOME"]
-        except:
-            raise ValueError(_("Could not find SPSS_SERVER_HOME environment variable"))
-        return ('"' + spsshome + os.path.sep + "bin" + os.path.sep +'"', None)
+            #print(f"SPSS_SERVER_HOME is set to: {spsshome}")
+        except KeyError:
+            raise ValueError("Could not find SPSS_SERVER_HOME environment variable")
+        if not os.path.isdir(spsshome):
+            raise ValueError(f"SPSS_SERVER_HOME does not point to a valid directory: {spsshome}")
+        return os.path.join(spsshome, "bin/"), None
     
-    raise SystemError(_("Could not find SPSS Statistics location"))
+    raise SystemError("Could not find SPSS Statistics location")
 
-    
+
 def getTargetLocation():
-    """Use the SHOW EXT output to find where installed Python modules should go"""
-    
-    workspace = "X." + str(random.uniform(.05, 1))  # no scientific notation will be used
+    """Retrieve target location for Python modules"""
+
+    workspace = "X." + str(random.uniform(.05, 1))
     spss.Submit(f"""PRESERVE.
     OMS SELECT TABLES/IF SUBTYPES='System Settings'
     /DESTINATION  FORMAT=OXML XMLWORKSPACE="{workspace}" VIEWER=NO
@@ -99,53 +169,46 @@ def getTargetLocation():
     SHOW EXT.
     OMSEND.
     RESTORE.""")
-    
+
     locs = spss.EvaluateXPath(workspace, "/outputTree", 
         """//pivotTable//group[@text="EXTPATHS EXTENSIONS"]//category[@text="Setting"]/cell/@*""")
     spss.DeleteXPathHandle(workspace)
+    #print(f"Target locations: {locs}")
     return locs
 
+
 def rinstall(packages):
-    "install list of R packages"
-    
-    # The command is formatted so as not to prematurely terminate the program
+    """Install R packages"""
+
     for p in packages:
-        cmd = f"""begin program r.
+        print(f"**** Installing R package {p} for {spss.GetDefaultPlugInVersion()} ****")
+        cmd = f"""BEGIN PROGRAM R.
 r = getOption("repos")
 if (r == "@CRAN@") {{
   r["CRAN"] <- "https://cloud.r-project.org"
   options(repos = r)
 }}
-install.packages("{p}", quiet=TRUE)""" + "\nend program."
-        print(_(f"**** Installing R package {p} for {spss.GetDefaultPlugInVersion()} ****")) 
+install.packages("{p}", quiet=TRUE)
+END PROGRAM."""
+        
         try:
             spss.Submit(cmd)
-        except:
-            pass
-    
-def  Run(args):
+        except Exception as e:
+            print(f"Error installing {p}: {str(e)}")
+
+
+def Run(args):
     """Execute the STATS PACKAGE INSTALL command"""
 
     args = args[list(args.keys())[0]]
 
-
     oobj = Syntax([
         Template("PYTHON", subc="",  ktype="literal", var="python", islist=True),
-        Template("R", subc="",  ktype="literal", var="R", islist=True)
+        Template("R", subc="",  ktype="literal", var="R", islist=True),
+        Template("PYTHON", subc="UNINSTALL", ktype="literal", var="pyuninstalls", islist=True)
     ])
-        
-    #debugging
-# debugging
-        # makes debug apply only to the current thread
-    #try:
-        #import wingdbstub
-        #import threading
-        #wingdbstub.Ensure()
-        #wingdbstub.debugger.SetDebugThreads({threading.get_ident(): 1})
-    #except:
-        #pass
 
-    #enable localization
+    # Enable localization
     global _
     try:
         _("---")
@@ -153,29 +216,42 @@ def  Run(args):
         def _(msg):
             return msg
 
-    # A HELP subcommand overrides all else
+    # Handle HELP subcommand
     if "HELP" in args:
-        #print helptext
         helper()
     else:
         processcmd(oobj, args, doinstalls)
 
+
 def helper():
-    """open html help in default browser window
-    
-    The location is computed from the current module name"""
-    
+    """Open HTML help in default browser window"""
+
     import webbrowser, os.path
     
     path = os.path.splitext(__file__)[0]
-    helpspec = "file://" + path + os.path.sep + \
-         "markdown.html"
+    helpspec = "file://" + path + os.path.sep + "markdown.html"
     
-    # webbrowser.open seems not to work well
     browser = webbrowser.get()
     if not browser.open_new(helpspec):
-        print(("Help file not found:" + helpspec))
-try:    #override
+        print(f"Help file not found: {helpspec}")
+
+try:
     from extension import helper
 except:
-    pass        
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
