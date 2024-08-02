@@ -7,6 +7,7 @@ version = __version__
 # 09-27-2022 protect against unset repos option
 # 03-jul-2024 add version specification and uninstall capability
 # 04-jul-2024
+# 01-aug-2024 use language-invariant OMS OXML via SET OATTRS
 
 # The STATS PACKAGE INSTALL extension command
 # R version numbers are not implemented
@@ -163,6 +164,7 @@ def getTargetLocation():
 
     workspace = "X." + str(random.uniform(.05, 1))
     spss.Submit(f"""PRESERVE.
+    SET OATTRS=ENG.
     OMS SELECT TABLES/IF SUBTYPES='System Settings'
     /DESTINATION  FORMAT=OXML XMLWORKSPACE="{workspace}" VIEWER=NO
     /TAG = "{workspace}".
@@ -170,8 +172,10 @@ def getTargetLocation():
     OMSEND.
     RESTORE.""")
 
-    locs = spss.EvaluateXPath(workspace, "/outputTree", 
-        """//pivotTable//group[@text="EXTPATHS EXTENSIONS"]//category[@text="Setting"]/cell/@*""")
+### //pivotTable//group[@text_eng="EXTPATHS EXTENSIONS"]//category[@text_eng="Setting"]/cell/@*
+    locs = spss.EvaluateXPath(workspace, "/outputTree",
+        """//pivotTable//group[@text_eng="EXTPATHS EXTENSIONS"]//category[@text_eng="Setting"]/cell/@*""")
+###        """//pivotTable//group[@text="EXTPATHS EXTENSIONS"]//category[@text="Setting"]/cell/@*""")
     spss.DeleteXPathHandle(workspace)
     #print(f"Target locations: {locs}")
     return locs

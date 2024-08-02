@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--***********************************************************************--><!----><!--Licensed Materials - Property of IBM--><!----><!--IBM SPSS Products: Modeler Common--><!----><!--(C) Copyright IBM Corp. 1989, 2021--><!----><!--US Government Users Restricted Rights - Use, duplication or disclosure--><!--restricted by GSA ADP Schedule Contract with IBM Corp.--><!----><!--***********************************************************************--><AppExtension xmlns="http://xml.spss.com/pasw/extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" version="8.0" xsi:schemaLocation="http://xml.spss.com/pasw/extension http://xml.spss.com/pasw/extension/AppExtension.xsd">
-  <ExtensionDetails copyright="(c) 2021 SPSS, Inc." description="Application extension for PySpark" id="installs" label="Install Modules" provider="IBM SPSS, Inc." providerTag="SPSS"/>
+<!--***********************************************************************--><!----><!--Licensed Materials - Property of IBM--><!----><!--IBM SPSS Products: Modeler Common--><!----><!--(C) Copyright IBM Corp. 1989, 2024--><!----><!--US Government Users Restricted Rights - Use, duplication or disclosure--><!--restricted by GSA ADP Schedule Contract with IBM Corp.--><!----><!--***********************************************************************--><AppExtension xmlns="http://xml.spss.com/pasw/extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" version="8.0" xsi:schemaLocation="http://xml.spss.com/pasw/extension http://xml.spss.com/pasw/extension/AppExtension.xsd">
+  <ExtensionDetails copyright="(c) 2024 SPSS, Inc." description="Application extension for PySpark" id="installs" label="Install Modules" provider="IBM SPSS, Inc." providerTag="SPSS"/>
   <ExtensionName name="extension"/>
   <Application name="statistics">
     <AppFeature dialogTitleKey="installs" featureId="installs">
@@ -15,13 +15,20 @@
         <ProcedureInfo titleKey="installs_proc_title"/>
         <AppUserInterface>
           <Menus>
-            <MenuItem actionIDToName="" featureId="installs" imagePath="R:\IBM\misc2\extensions\tools\defaultdialogicon.png" installToGlobalCustomMenu="false" isSpssNative="false" menuFrame="all" menuVersion="2" offset="3" previousId="utilities_install_extension_bundle" resourceKey="installs" separatorAfter="none" separatorBefore="false" showIcon="false" spssMenu="Extensions"/>
+            <MenuItem actionIDToName="" featureId="installs" imagePath="C:\Users\jkpec\AppData\Local\Temp\spss17892\_uibuilder8894202718298553474.tmp\defaultdialogicon.png" installToGlobalCustomMenu="false" isSpssNative="false" menuFrame="all" menuVersion="2" offset="3" previousId="utilities_install_extension_bundle" resourceKey="installs" separatorAfter="none" separatorBefore="false" showIcon="false" spssMenu="Extensions"/>
           </Menus>
         </AppUserInterface>
-        <SyntaxGeneration syntaxTemplate="STATS PACKAGE INSTALL\n    %%pythonpk_syntax%% %%Rpk_syntax%%">
-          <SyntaxItem name="pythonpk_syntax" syntax="PYTHON=%%pythonpk:item_5_0%%"/>
+        <SyntaxGeneration syntaxTemplate="STATS PACKAGE INSTALL&#13;&#10;    %%pythonpk_syntax%% %%Rpk_syntax%%&#13;&#10;%%pythonuninstalls_syntax%%">
+          <SyntaxProperty name="uninstalls" syntax=""/>
+          <SyntaxItem name="pythonuninstalls_syntax" syntax="/UNINSTALL PYTHON=%%pythonuninstalls:item_15_0%%"/>
+          <SyntaxProperty name="pythonuninstalls" syntax="%%ThisValue%%"/>
+          <SyntaxProperty delimiter=" " name="pythonuninstalls:item_15_0" quoteType="None" syntax="%%ThisValue%%"/>
+          <SyntaxItem name="item_16_syntax" syntax="%%item_16%%"/>
+          <SyntaxProperty name="item_16" syntax="%%ThisValue%%"/>
+          <SyntaxItem name="pythonpk_syntax" syntax="PYTHON=%%pythonpk:item_5_0%% &quot;%%pythonpk:pythonpk_1_Column%%&quot; "/>
           <SyntaxProperty name="pythonpk" syntax="%%ThisValue%%"/>
           <SyntaxProperty delimiter=" " name="pythonpk:item_5_0" quoteType="None" syntax="%%ThisValue%%"/>
+          <SyntaxProperty delimiter=" " name="pythonpk:pythonpk_1_Column" quoteType="None" syntax="%%ThisValue%%"/>
           <SyntaxItem name="Rpk_syntax" syntax="R=%%Rpk:item_6_0%%"/>
           <SyntaxProperty name="Rpk" syntax="%%ThisValue%%"/>
           <SyntaxProperty delimiter=" " name="Rpk:item_6_0" quoteType="None" syntax="%%ThisValue%%"/>
