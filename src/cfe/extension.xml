@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--***********************************************************************--><!----><!--Licensed Materials - Property of IBM--><!----><!--IBM SPSS Products: Modeler Common--><!----><!--(C) Copyright IBM Corp. 1989, 2021--><!----><!--US Government Users Restricted Rights - Use, duplication or disclosure--><!--restricted by GSA ADP Schedule Contract with IBM Corp.--><!----><!--***********************************************************************--><Extension xmlns="http://xml.spss.com/pasw/extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" version="8.0" xsi:schemaLocation="http://xml.spss.com/pasw/extension http://xml.spss.com/pasw/extension/ExtensionSpecification.xsd">
+<!--***********************************************************************--><!----><!--Licensed Materials - Property of IBM--><!----><!--IBM SPSS Products: Modeler Common--><!----><!--(C) Copyright IBM Corp. 1989, 2024--><!----><!--US Government Users Restricted Rights - Use, duplication or disclosure--><!--restricted by GSA ADP Schedule Contract with IBM Corp.--><!----><!--***********************************************************************--><Extension xmlns="http://xml.spss.com/pasw/extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" version="8.0" xsi:schemaLocation="http://xml.spss.com/pasw/extension http://xml.spss.com/pasw/extension/ExtensionSpecification.xsd">
   <ExtensionDetails description="Created by CDB" id="installs" label="Install Modules" provider="IBM SPSS, Inc." providerTag="spss" version="8.0"/>
   <Resources>
-    <Bundle id="bundle73" path="installs" type="properties"/>
+    <Bundle id="bundle959" path="installs" type="properties"/>
     <JarFile id="jar" path="cdb_peer.jar"/>
     <HelpInfo id="HTMLHelp" type="HTMLHelp"/>
   </Resources>
   <CommonObjects>
     <PropertyTypes>
-      <Structure id="structure_pythonpk_1">
-        <Attribute colWidth="20" delimiter=" " name="item_5_0" resourceKey="structure_pythonpk_1.item_5_0" syntax="%%ThisValue%%" valueType="string"/>
+      <Structure id="structure_pythonuninstalls_1">
+        <Attribute colWidth="8" delimiter=" " name="item_15_0" resourceKey="structure_pythonuninstalls_1.item_15_0" syntax="%%ThisValue%%" valueType="string"/>
+      </Structure>
+      <Structure id="structure_pythonpk_2">
+        <Attribute colWidth="20" delimiter=" " name="item_5_0" resourceKey="structure_pythonpk_2.item_5_0" syntax="%%ThisValue%%" valueType="string"/>
+        <Attribute colWidth="7" defaultValue="*" delimiter=" " name="pythonpk_1_Column" resourceKey="structure_pythonpk_2.pythonpk_1_Column" syntax="&quot;%%ThisValue%%&quot;" valueType="string"/>
       </Structure>
       <Structure id="structure_Rpk_1">
         <Attribute colWidth="20" delimiter=" " name="item_6_0" resourceKey="structure_Rpk_1.item_6_0" syntax="%%ThisValue%%" valueType="string"/>
@@ -42,7 +46,7 @@
       <ImportProperties context="rbuilder"/>
       <Property defaultValue="" name="modelName" valueType="string"/>
       <Property defaultValue="false" name="modelRename" valueType="boolean"/>
-      <Property defaultValue="STATS PACKAGE INSTALL\n    %%pythonpk%% %%Rpk%%" name="script" valueType="string"/>
+      <Property defaultValue="STATS PACKAGE INSTALL&#13;&#10;    %%pythonpk%% %%Rpk%%&#13;&#10;%%pythonuninstalls%%" name="script" valueType="string"/>
       <Property defaultValue="false" name="canScore" valueType="boolean"/>
       <Property defaultValue="" name="scoringScript" valueType="string"/>
       <Property name="addOns" valueType="string"/>
@@ -50,9 +54,12 @@
       <Property defaultValue="SYNTAX" name="scriptType" valueType="string"/>
       <Property defaultValue="MODEL" name="nodeType" valueType="string"/>
       <Property defaultValue="MODELING" name="paletteType" valueType="string"/>
-      <Property defaultValue="%%ThisValue%%" name="item_17_syntax" valueType="string"/>
-      <Property defaultValue="PYTHON=%%ThisValue%%" name="pythonpk_syntax" valueType="string"/>
-      <Property isKeyed="false" isList="true" name="pythonpk" type="structure_pythonpk_1" valueType="structure"/>
+      <Property defaultValue="%%ThisValue%%" name="item_19_syntax" valueType="string"/>
+      <Property defaultValue="%%ThisValue%%" name="item_23_syntax" valueType="string"/>
+      <Property defaultValue="/UNINSTALL PYTHON=%%ThisValue%%" name="pythonuninstalls_syntax" valueType="string"/>
+      <Property isKeyed="false" isList="true" name="pythonuninstalls" type="structure_pythonuninstalls_1" valueType="structure"/>
+      <Property defaultValue="PYTHON=%%ThisValue%% " name="pythonpk_syntax" valueType="string"/>
+      <Property isKeyed="false" isList="true" name="pythonpk" type="structure_pythonpk_2" valueType="structure"/>
       <Property defaultValue="R=%%ThisValue%%" name="Rpk_syntax" valueType="string"/>
       <Property isKeyed="false" isList="true" name="Rpk" type="structure_Rpk_1" valueType="structure"/>
     </Properties>
@@ -63,27 +70,51 @@
           <PropertiesPanel id="leftPanel">
             <Layout anchor="firstLineStart" columnWeight="1.0" fill="horizontal" gridColumn="0" gridHeight="1" gridRow="0" gridWidth="1" rowWeight="1.0"/>
             <StaticText textKey="item_4.LABEL">
-              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="0" gridRow="2" gridWidth="1" rowWeight="0.0"/>
+              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="0" gridRow="2" gridWidth="1" rowWeight="1.0"/>
             </StaticText>
-            <TableControl allowRowReorder="true" columnWidths="[20 ]" labelAbove="true" property="pythonpk" resourceKey="pythonpk" showDeleteButton="true" showLabel="true" showNewButton="true" showTopBottomButton="false">
+            <TableControl allowRowReorder="true" columnWidths="[20 7 ]" labelAbove="true" property="pythonpk" resourceKey="pythonpk" showDeleteButton="true" showLabel="true" showNewButton="true" showTopBottomButton="false">
               <Layout anchor="northwest" columnWeight="1.0" fill="both" gridColumn="0" gridRow="0" gridWidth="1" rowWeight="0.0"/>
             </TableControl>
-            <StaticText textKey="item_11.LABEL">
-              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="0" gridRow="3" gridWidth="1" rowWeight="1.0"/>
-            </StaticText>
           </PropertiesPanel>
           <PropertiesPanel id="middlePanel">
             <Layout anchor="firstLineStart" columnWeight="1.0" fill="horizontal" gridColumn="1" gridHeight="1" gridRow="0" gridWidth="1" rowWeight="1.0"/>
+            <StaticText textKey="item_11.LABEL">
+              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="1" gridRow="3" gridWidth="1" rowWeight="0.0"/>
+            </StaticText>
             <TableControl allowRowReorder="true" columnWidths="[20 ]" labelAbove="true" property="Rpk" resourceKey="Rpk" showDeleteButton="true" showLabel="true" showNewButton="true" showTopBottomButton="false">
               <Layout anchor="northwest" columnWeight="1.0" fill="both" gridColumn="1" gridRow="0" gridWidth="1" rowWeight="0.0"/>
             </TableControl>
             <StaticText textKey="item_7.LABEL">
-              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="1" gridRow="2" gridWidth="1" rowWeight="1.0"/>
+              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="1" gridRow="2" gridWidth="1" rowWeight="0.0"/>
             </StaticText>
+            <StaticText textKey="item_31.LABEL">
+              <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="1" gridRow="4" gridWidth="1" rowWeight="1.0"/>
+            </StaticText>
+          </PropertiesPanel>
+          <PropertiesPanel id="ButtonPanel">
+            <Layout anchor="firstLineStart" columnWeight="0.3" fill="horizontal" gridColumn="2" gridHeight="1" gridRow="0" gridWidth="1" rowWeight="1.0"/>
+            <PropertiesSubPanel buttonResourceKey="uninstalls.buttonResKey" dialogTitleKey="Uninstalldlg.dialogTitleKey">
+              <Layout anchor="northwest" columnWeight="0.0" fill="horizontal" gridColumn="2" gridRow="0" gridWidth="1" rowWeight="0.0"/>
+              <PropertiesPanel>
+                <PropertiesPanel>
+                  <Layout anchor="northwest" columnWeight="1.0" fill="both" gridColumn="0" gridHeight="1" gridRow="0" gridWidth="1" rowWeight="1.0"/>
+                  <PropertiesPanel id="leftPanel">
+                    <Layout anchor="firstLineStart" columnWeight="1.0" fill="horizontal" gridColumn="0" gridHeight="1" gridRow="0" gridWidth="1" rowWeight="1.0"/>
+                    <TableControl allowRowReorder="true" columnWidths="[8 ]" labelAbove="true" property="pythonuninstalls" resourceKey="pythonuninstalls" showDeleteButton="true" showLabel="true" showNewButton="true" showTopBottomButton="false">
+                      <Layout anchor="northwest" columnWeight="1.0" fill="both" gridColumn="0" gridRow="0" gridWidth="1" rowWeight="0.0"/>
+                    </TableControl>
+                    <StaticText textKey="item_16.LABEL">
+                      <Layout anchor="northwest" columnWeight="1.0" fill="horizontal" gridColumn="0" gridRow="2" gridWidth="1" rowWeight="1.0"/>
+                    </StaticText>
+                  </PropertiesPanel>
+                </PropertiesPanel>
+              </PropertiesPanel>
+            </PropertiesSubPanel>
           </PropertiesPanel>
         </PropertiesPanel>
       </PropertiesPanel>
     </UserInterface>
+    <Validations/>
     <OutputDataModel mode="replace"/>
     <Execution>
       <Outputs>
@@ -103,6 +134,5 @@
         <OutputContainer containerName="StatXML" id="C6" targetContainer="StatXML"/>
       </RunComponent>
     </Execution>
-    <Validations/>
   </Feature>
 </Extension>
