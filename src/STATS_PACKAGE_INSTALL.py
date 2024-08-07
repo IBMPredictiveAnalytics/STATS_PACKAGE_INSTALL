@@ -142,8 +142,14 @@ def getSpssLocation():
     
     elif plat.startswith("darwin"):
         # macOS specific
-        spsshome = "/Applications/IBM SPSS Statistics/SPSS Statistics.app/Contents/bin/"
-        #print(f"SPSS_HOME is set to: {spsshome}")
+        try:
+            spsshome = "/Applications/IBM SPSS Statistics/IBM SPSS Statistics.app/Contents/bin/"
+            if not os.path.isdir(spsshome):
+                raise FileNotFoundError
+        except FileNotFoundError:
+            spsshome = "/Applications/IBM SPSS Statistics/SPSS Statistics.app/Contents/bin/"
+            if not os.path.isdir(spsshome):
+                raise ValueError("Could not find SPSS Statistics installation directory on macOS")
         return spsshome, None
     
     elif plat.startswith("linux"):
