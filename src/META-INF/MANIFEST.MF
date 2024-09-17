@@ -1,5 +1,5 @@
 Name: STATS_PACKAGE_INSTALL
-Display-name: Install Python and R Modules
+Display-Name: Install Python and R Modules
 Dialog-Specs: STATS_PACKAGE_INSTALL.cfe
 Command-Specs: STATS_PACKAGE_INSTALL.xml
 Code-Files: STATS_PACKAGE_INSTALL.py
