@@ -1,4 +1,5 @@
 Name: STATS_PACKAGE_INSTALL
+Display-name: Package Install
 Dialog-Specs: STATS_PACKAGE_INSTALL.cfe
 Command-Specs: STATS_PACKAGE_INSTALL.xml
 Code-Files: STATS_PACKAGE_INSTALL.py
