@@ -49,7 +49,7 @@ def doinstalls(python=None, R=None, pyuninstalls=None):
 def validatever(pspec):
     """Validate package names and versions for Python and R"""
 
-    regex = "[\d.*<>]+"  # Regular expression to match version specifications
+    regex = r"[\d.*<>]+"  # Regular expression to match version specifications
 
     if pspec is None:
         return None, None
